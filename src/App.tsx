@@ -1,10 +1,5 @@
-import './App.css'
+import { PromptGenerator } from './app/PromptGenerator'
 
-function App() {
-
-  return (
-    <><h1>Hola GitHub Pages 🚀</h1></>
-  )
+export default function App() {
+  return <PromptGenerator />
 }
-
-export default App
