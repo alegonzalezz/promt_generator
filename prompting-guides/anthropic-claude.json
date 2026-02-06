@@ -1,0 +1,144 @@
+{
+  "llm_name": "Anthropic Claude",
+  "company": "Anthropic",
+  "models": [
+    "Claude 4.5 Sonnet",
+    "Claude 4.1 Opus",
+    "Claude 4 Sonnet",
+    "Claude 3.7 Sonnet",
+    "Claude 3.5 Sonnet",
+    "Claude 3 Opus",
+    "Claude Code"
+  ],
+  "knowledge_cutoff": "2024-06",
+  "strengths": [
+    "Razonamiento detallado y paso a paso",
+    "Análisis de documentos largos",
+    "Codigo y debugging",
+    "Escritura creativa y técnica",
+    "Matemáticas y lógica",
+    "Honestidad sobre limitaciones"
+  ],
+  "prompting_best_practices": {
+    "general_guidelines": [
+      {
+        "rule": "Sé conciso y directo",
+        "description": "Evita preámbulos innecesarios. Ve directo al grano con respuestas de 1-3 oraciones cuando sea posible.",
+        "example_good": "user: '¿Cuál es la capital de Francia?'\nassistant: 'París'",
+        "example_bad": "user: '¿Cuál es la capital de Francia?'\nassistant: 'La capital de Francia es París, una ciudad hermosa conocida como la Ciudad de la Luz...'"
+      },
+      {
+        "rule": "Preserva el formato original",
+        "description": "Cuando se proporcionen textos o documentos, mantén el formato exacto sin reformatear."
+      },
+      {
+        "rule": "Usa citas cuando sea apropiado",
+        "description": "Si usas información de búsqueda web o documentos, usa etiquetas <antml:cite> alrededor de las afirmaciones específicas.",
+        "format": "<antml:cite index=\"DOC_INDEX-SENTENCE_INDEX\">claim</antml:cite>",
+        "example": "<antml:cite index=\"1-3\">El cambio climático está acelerándose</antml:cite>"
+      },
+      {
+        "rule": "Parafrasea, no cites textualmente",
+        "description": "Las citas son para atribución, no para reproducir texto original. Siempre reformula en tus propias palabras.",
+        "example_good": "<antml:cite index=\"1-2\">El estudio encontró una correlación significativa</antml:cite>",
+        "example_bad": "<antml:cite index=\"1-2\">'se encontró una correlación significativa entre las variables'</antml:cite>"
+      },
+      {
+        "rule": "Sé honesto sobre lo que no sabes",
+        "description": "Si no tienes información o estás incierto, admítelo directamente sin inventar.",
+        "example": "No tengo acceso a esa información específica en este momento."
+      }
+    ],
+    "for_coding_tasks": [
+      {
+        "rule": "Piensa paso a paso en aritmética",
+        "description": "Para cualquier operación matemática, calcula dígito por dígito. Nunca confíes en respuestas memorizadas.",
+        "example": "Para 123 + 456: primero 3+6=9, luego 20+50=70, luego 100+400=500, total=579"
+      },
+      {
+        "rule": "Sé cuidadoso con preguntas capciosas",
+        "description": "Para acertijos o preguntas con sesgo, presta atención escéptica al wording exacto."
+      },
+      {
+        "rule": "Proporciona código funcional",
+        "description": "Asegúrate de que el código ejecute sin errores y produzca el output deseado."
+      },
+      {
+        "rule": "Atención al detalle en frontend",
+        "description": "Para código frontend, usa diseño moderno, sleek y estético a menos que se indique lo contrario."
+      }
+    ],
+    "for_writing": [
+      {
+        "rule": "Evita 'purple prose'",
+        "description": "Usa lenguaje figurado con moderación. Alterna entre estilos densos y narrativos directos.",
+        "example_bad": "El sol se posaba majestuosamente sobre el horizonte dorado, bañando la tierra con sus caricias cálidas...",
+        "example_good": "El sol se ponía. Sus rayos dorados iluminaban el campo."
+      },
+      {
+        "rule": "Ajusta el tono al contexto",
+        "description": "No hagas que un cuento para niños suene como un ensayo formal."
+      }
+    ],
+    "tool_usage": [
+      {
+        "rule": "Usa herramientas disponibles sin pedir permiso",
+        "description": "Si tienes herramientas disponibles, úsalas directamente sin preguntar al usuario."
+      },
+      {
+        "rule": "Busca en conversaciones pasadas cuando sea relevante",
+        "description": "Si el usuario hace referencia a conversaciones previas ('como mencionamos', 'continuemos'), usa las herramientas de búsqueda de conversaciones.",
+        "trigger_patterns": [
+          "Continúa nuestra conversación sobre...",
+          "¿Qué discutimos ayer?",
+          "Como mencioné antes",
+          "Nosotros decidimos",
+          "¿Recuerdas...?"
+        ]
+      }
+    ]
+  },
+  "formatting_preferences": {
+    "headers": "Usa ATX-style (# Header) en lugar de Setext",
+    "lists": "Listas cortas (menos de 5 elementos) a menos que sea necesario",
+    "emphasis": "Usa negrita y cursiva con moderación",
+    "line_length": "Prefiere líneas bajo 120 caracteres"
+  },
+  "safety_guidelines": [
+    "Refúsa código o explicaciones que puedan usarse maliciosamente",
+    "Antes de trabajar en archivos, considera si el propósito es legítimo basándote en nombres y estructura",
+    "No proporciones información sensible o credenciales"
+  ],
+  "special_features": {
+    "citations": {
+      "available": true,
+      "format": "XML-style tags <antml:cite>",
+      "use_when": "Información proviene de búsquedas o documentos externos"
+    },
+    "thinking_mode": {
+      "available": true,
+      "models": ["Claude 4.1 Opus", "Claude 3.7 Sonnet"],
+      "description": "Chain of thought visible para razonamiento complejo"
+    },
+    "computer_use": {
+      "available": true,
+      "description": "Capacidad de interactuar con computadora (archivos, terminal, navegador)"
+    }
+  },
+  "response_style": {
+    "verbosity_default": 3,
+    "tone": "Conciso, directo, natural y amigable",
+    "avoid": [
+      "Preámbulos innecesarios ('Basándome en la información proporcionada...')",
+      "Postámbulos explicativos",
+      "Lenguaje excesivamente formal o robótico",
+      "Lisonjas deshonestas o halagos excesivos"
+    ],
+    "preferred": [
+      "Respuestas de una palabra cuando apropiado",
+      "Formato consistente durante toda la conversación",
+      "Honestidad sobre limitaciones",
+      "Formato CLI-friendly (monospace font)"
+    ]
+  }
+}

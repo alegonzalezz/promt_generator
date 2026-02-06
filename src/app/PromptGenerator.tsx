@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
     Container,
     Card,
@@ -18,6 +18,8 @@ import {
     FormControlLabel,
     Checkbox,
     Paper,
+    CircularProgress,
+    Alert,
 } from '@mui/material'
 import {
     ContentCopy as CopyIcon,
@@ -27,14 +29,18 @@ import {
     Info as InfoIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
+    SmartToy as ModelIcon,
 } from '@mui/icons-material'
-import { buildPrompt } from '../domain/buildPrompt'
+import { buildPromptJsonString } from '../domain/buildPrompt'
+import { availableModels, loadPromptingGuide, type PromptingGuide } from '../domain/llmModels'
 
 const roleOptions = [
     { value: 'backend developer', label: 'Backend Developer', icon: <CodeIcon /> },
     { value: 'frontend developer', label: 'Frontend Developer', icon: <CodeIcon /> },
     { value: 'software architect', label: 'Software Architect', icon: <RoleIcon /> },
     { value: 'docente', label: 'Docente', icon: <RoleIcon /> },
+    { value: 'data scientist', label: 'Data Scientist', icon: <CodeIcon /> },
+    { value: 'product manager', label: 'Product Manager', icon: <RoleIcon /> },
 ]
 
 const contextOptions = [
@@ -103,16 +109,44 @@ const protocolOptions = [
     },
 ]
 
-type ExpandedSection = 'context' | 'protocol' | null
+type ExpandedSection = 'context' | 'protocol' | 'model' | null
 
 export function PromptGenerator() {
     const [input, setInput] = useState('')
     const [role, setRole] = useState('backend developer')
+    const [selectedModel, setSelectedModel] = useState(availableModels[0].id)
+    const [modelGuide, setModelGuide] = useState<PromptingGuide | null>(null)
+    const [loadingGuide, setLoadingGuide] = useState(false)
+    const [guideError, setGuideError] = useState<string | null>(null)
     const [contexts, setContexts] = useState<string[]>([])
     const [protocols, setProtocols] = useState<string[]>([])
     const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null)
 
-    const toggleSection = (section: 'context' | 'protocol') => {
+    const loadGuide = useCallback(async (modelId: string) => {
+        const model = availableModels.find((m) => m.id === modelId)
+        if (!model) return
+
+        setLoadingGuide(true)
+        setGuideError(null)
+        try {
+            const guide = await loadPromptingGuide(model.guideFile)
+            setModelGuide(guide)
+            if (!guide) {
+                setGuideError(`No se pudo cargar la guía para ${model.name}`)
+            }
+        } catch {
+            setGuideError('Error cargando la guía del modelo')
+            setModelGuide(null)
+        } finally {
+            setLoadingGuide(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        loadGuide(selectedModel)
+    }, [selectedModel, loadGuide])
+
+    const toggleSection = (section: 'context' | 'protocol' | 'model') => {
         setExpandedSection((prev) => (prev === section ? null : section))
     }
 
@@ -128,11 +162,13 @@ export function PromptGenerator() {
         )
     }
 
-    const prompt = buildPrompt({ input, role, contexts, protocols })
+    const prompt = input ? buildPromptJsonString({ input, role, contexts, protocols, modelGuide }) : ''
 
     const copyToClipboard = async () => {
         await navigator.clipboard.writeText(prompt)
     }
+
+    const selectedModelData = availableModels.find((m) => m.id === selectedModel)
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -140,7 +176,7 @@ export function PromptGenerator() {
                 Prompt Generator
             </Typography>
             <Typography variant="subtitle1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-                Crea prompts personalizados para tus asistentes de IA
+                Crea prompts personalizados optimizados para diferentes modelos de IA
             </Typography>
 
             <Box
@@ -168,6 +204,67 @@ export function PromptGenerator() {
                                     placeholder="Describe tu solicitud aquí..."
                                     variant="outlined"
                                 />
+
+                                <FormControl fullWidth>
+                                    <InputLabel>Modelo de IA</InputLabel>
+                                    <Select
+                                        value={selectedModel}
+                                        onChange={(e) => setSelectedModel(e.target.value)}
+                                        label="Modelo de IA"
+                                    >
+                                        {availableModels.map((model) => (
+                                            <MenuItem key={model.id} value={model.id}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                    <span>{model.icon}</span>
+                                                    <Box>
+                                                        <Typography variant="body2">{model.name}</Typography>
+                                                        <Typography variant="caption" color="text.secondary">
+                                                            {model.company}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+
+                                {loadingGuide && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <CircularProgress size={16} />
+                                        <Typography variant="caption" color="text.secondary">
+                                            Cargando guía del modelo...
+                                        </Typography>
+                                    </Box>
+                                )}
+
+                                {guideError && (
+                                    <Alert severity="warning" sx={{ fontSize: '0.875rem' }}>
+                                        {guideError}
+                                    </Alert>
+                                )}
+
+                                {modelGuide && selectedModelData && (
+                                    <Paper elevation={0} sx={{ border: '1px solid rgba(76, 175, 80, 0.3)', p: 2 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                                            <ModelIcon color="success" />
+                                            <Typography variant="subtitle2" color="success.main">
+                                                Modelo seleccionado: {selectedModelData.name}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            {selectedModelData.strengths.slice(0, 4).map((strength, idx) => (
+                                                <Chip
+                                                    key={idx}
+                                                    label={strength}
+                                                    size="small"
+                                                    color="success"
+                                                    variant="outlined"
+                                                    sx={{ fontSize: '0.75rem' }}
+                                                />
+                                            ))}
+                                        </Box>
+                                    </Paper>
+                                )}
 
                                 <FormControl fullWidth>
                                     <InputLabel>Rol</InputLabel>
@@ -318,6 +415,12 @@ export function PromptGenerator() {
 
                                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                     <Chip
+                                        icon={<ModelIcon />}
+                                        label={selectedModelData?.name || 'Modelo'}
+                                        color="success"
+                                        variant="outlined"
+                                    />
+                                    <Chip
                                         icon={<CodeIcon />}
                                         label={roleOptions.find((r) => r.value === role)?.label}
                                         color="primary"
@@ -376,7 +479,11 @@ export function PromptGenerator() {
                                     border: '1px solid rgba(74, 144, 226, 0.2)',
                                 }}
                             >
-                                {prompt || (
+                                {input ? (
+                                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                                        {prompt}
+                                    </pre>
+                                ) : (
                                     <Typography color="text.secondary" align="center" sx={{ mt: 8 }}>
                                         Tu prompt aparecerá aquí...
                                     </Typography>

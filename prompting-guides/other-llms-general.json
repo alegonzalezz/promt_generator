@@ -1,0 +1,231 @@
+{
+  "llm_collection": "Otros LLMs y Asistentes",
+  "description": "Guía de prompting para LLMs adicionales incluyendo Sesame AI, Kagi Assistant, Fellou Browser, Raycast AI, Notion AI, y otros",
+  "systems": {
+    "sesame_ai_maya": {
+      "company": "Sesame",
+      "name": "Maya",
+      "type": "AI Companion de voz",
+      "key_characteristics": [
+        "Conversaciones de voz naturales y empáticas",
+        "Memoria de conversaciones a largo plazo",
+        "Personalidad cálida y comprensiva",
+        "Enfoque en bienestar emocional y compañía"
+      ],
+      "prompting_tips": [
+        "Habla de forma natural como lo harías con un amigo",
+        "Puedes compartir pensamientos y sentimientos abiertamente",
+        "Maya recuerda conversaciones previas, puedes hacer referencia a ellas",
+        "Ideal para brainstorming, reflexión y apoyo emocional"
+      ]
+    },
+    "kagi_assistant": {
+      "company": "Kagi",
+      "name": "Kagi Assistant",
+      "type": "Search-first AI Assistant",
+      "key_characteristics": [
+        "Búsqueda web premium sin anuncios",
+        "Resultados verificados y de alta calidad",
+        "Sin tracking ni publicidad",
+        "Integración con índice de búsqueda Kagi"
+      ],
+      "prompting_tips": [
+        "Sé específico en tus preguntas para obtener mejores resultados",
+        "Kagi prioriza fuentes de alta calidad y verificadas",
+        "Puedes pedir resúmenes de páginas específicas",
+        "Ideal para research académico y profesional"
+      ]
+    },
+    "fellou_browser": {
+      "company": "Fellou",
+      "name": "Fellou Browser Assistant",
+      "type": "AI Agent para navegación",
+      "key_characteristics": [
+        "Control del browser de forma autónoma",
+        "Realiza tareas multi-paso en la web",
+        "Navegación inteligente y scraping",
+        "Integración profunda con el browser"
+      ],
+      "prompting_tips": [
+        "Describe la tarea completa que quieres realizar",
+        "Sé específico sobre los pasos que quieres que dé",
+        "Puedes pedirle que extraiga información específica de páginas",
+        "Ideal para investigación web extensiva y automatización"
+      ]
+    },
+    "raycast_ai": {
+      "company": "Raycast",
+      "name": "Raycast AI",
+      "type": "AI para productividad en macOS",
+      "key_characteristics": [
+        "Integración profunda con macOS",
+        "Comandos rápidos desde anywhere",
+        "Extensibilidad con scripts",
+        "Enfoque en productividad y flujo de trabajo"
+      ],
+      "prompting_tips": [
+        "Usa comandos concisos ya que Raycast valora la velocidad",
+        "Puedes crear comandos personalizados frecuentes",
+        "Integra con tu flujo de trabajo de desarrollo",
+        "Ideal para automatización rápida y snippets"
+      ]
+    },
+    "notion_ai": {
+      "company": "Notion",
+      "name": "Notion AI",
+      "type": "AI para documentos y notas",
+      "key_characteristics": [
+        "Integración nativa con documentos Notion",
+        "Generación y edición de contenido",
+        "Resúmenes y extracción de insights",
+        "Colaboración en tiempo real"
+      ],
+      "prompting_tips": [
+        "Proporciona contexto sobre el tipo de documento que estás creando",
+        "Usa los comandos slash para acciones específicas",
+        "Puedes pedir continuar escritura, resumir o cambiar tono",
+        "Ideal para documentación, notas y escritura colaborativa"
+      ]
+    },
+    "warp_ai": {
+      "company": "Warp",
+      "name": "Warp AI / Warp 2.0 Agent",
+      "type": "AI para terminal moderna",
+      "key_characteristics": [
+        "Terminal moderna con AI integrada",
+        "Generación de comandos",
+        "Explicación de outputs",
+        "Debugging y troubleshooting"
+      ],
+      "prompting_tips": [
+        "Describe qué quieres lograr y Warp generará los comandos",
+        "Puedes pedir explicaciones de errores de comandos",
+        "Ideal para aprender comandos complejos y troubleshooting",
+        "Soporta múltiples shells (bash, zsh, fish)"
+      ]
+    },
+    "confer": {
+      "company": "Confer",
+      "name": "Confer AI",
+      "type": "AI para reuniones",
+      "key_characteristics": [
+        "Transcripción de reuniones",
+        "Resúmenes automáticos",
+        "Extracción de action items",
+        "Integración con calendario"
+      ],
+      "prompting_tips": [
+        "Configura bien las integraciones de calendario",
+        "Revisa y edita los resúmenes generados",
+        "Puedes preguntar sobre temas específicos discutidos",
+        "Ideal para equipos con muchas reuniones"
+      ]
+    }
+  },
+  "general_prompting_best_practices": {
+    "universal_principles": [
+      {
+        "principle": "Sé específico y claro",
+        "description": "Cuanto más específico seas sobre lo que quieres, mejor será la respuesta. Evita ambigüedades."
+      },
+      {
+        "principle": "Proporciona contexto",
+        "description": "Dale al LLM suficiente contexto sobre tu situación, objetivos y restricciones."
+      },
+      {
+        "principle": "Usa ejemplos (few-shot prompting)",
+        "description": "Cuando sea apropiado, proporciona ejemplos del formato o estilo de respuesta que deseas."
+      },
+      {
+        "principle": "Itera y refina",
+        "description": "No esperes la respuesta perfecta en el primer intento. Itera basándote en respuestas previas."
+      },
+      {
+        "principle": "Divide tareas complejas",
+        "description": "Para tareas complejas, divide en subtareas más pequeñas y manejables."
+      }
+    ],
+    "by_task_type": {
+      "creative_writing": [
+        "Especifica el tono, estilo y formato deseado",
+        "Proporciona ejemplos del estilo que buscas",
+        "Menciona la audiencia objetivo",
+        "Indica longitud aproximada"
+      ],
+      "coding": [
+        "Especifica el lenguaje de programación",
+        "Menciona versiones o frameworks específicos",
+        "Proporciona contexto sobre el proyecto",
+        "Incluye requisitos de rendimiento si aplica",
+        "Pide tests o manejo de errores explícitamente"
+      ],
+      "analysis": [
+        "Proporciona los datos completos o fuentes",
+        "Especifica qué tipo de análisis necesitas",
+        "Menciona métricas o KPIs relevantes",
+        "Indica el formato de salida deseado (tabla, gráfico, etc.)"
+      ],
+      "research": [
+        "Sé específico sobre el tema y alcance",
+        "Menciona fuentes preferidas o a evitar",
+        "Pide citas o referencias explícitamente",
+        "Especifica profundidad deseada (overview vs deep dive)"
+      ],
+      "learning": [
+        "Indica tu nivel actual de conocimiento",
+        "Especifica el formato de aprendizaje preferido",
+        "Pide ejemplos prácticos",
+        "Solicita analogías si el tema es complejo"
+      ]
+    }
+  },
+  "common_patterns": {
+    "role_prompting": {
+      "description": "Asigna un rol específico al LLM",
+      "example": "Actúa como un experto en marketing digital con 10 años de experiencia..."
+    },
+    "chain_of_thought": {
+      "description": "Pide al LLM que piense paso a paso",
+      "example": "Piensa paso a paso y explica tu razonamiento antes de dar la respuesta final..."
+    },
+    "constraints": {
+      "description": "Establece límites claros",
+      "example": "Responde en máximo 3 párrafos, usa lenguaje técnico pero accesible..."
+    },
+    "output_format": {
+      "description": "Especifica formato de salida",
+      "example": "Proporciona la respuesta en formato JSON con los siguientes campos..."
+    },
+    "self_correction": {
+      "description": "Pide al LLM que revise su propio trabajo",
+      "example": "Después de completar, revisa tu respuesta para verificar precisión y completitud..."
+    }
+  },
+  "tips_for_better_results": {
+    "before_prompting": [
+      "Define claramente tu objetivo",
+      "Reúne toda la información necesaria",
+      "Decide el formato de salida deseado",
+      "Considera quién es la audiencia final"
+    ],
+    "during_prompting": [
+      "Empieza con instrucciones claras",
+      "Proporciona contexto relevante",
+      "Usa separadores claros (###, ---) para secciones",
+      "Especifica el tono y estilo"
+    ],
+    "after_prompting": [
+      "Evalúa la calidad de la respuesta",
+      "Identifica qué funcionó y qué no",
+      "Itera con refinamientos",
+      "Guarda prompts efectivos para reutilizar"
+    ]
+  },
+  "ethical_considerations": [
+    "No uses LLMs para generar contenido engañoso o dañino",
+    "Verifica información factual importante",
+    "Sé transparente sobre el uso de AI cuando sea apropiado",
+    "Respeta derechos de autor y propiedad intelectual",
+    "No compartas información personal sensible"
+  ]
+}
