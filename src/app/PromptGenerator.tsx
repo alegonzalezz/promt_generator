@@ -33,6 +33,9 @@ import {
 } from '@mui/icons-material'
 import { buildPromptJsonString } from '../domain/buildPrompt'
 import { availableModels, loadPromptingGuide, type PromptingGuide } from '../domain/llmModels'
+import { skillsTree } from '../domain/skills'
+import { SkillTree } from './SkillTree'
+import { Lightbulb as SkillsIcon } from '@mui/icons-material'
 
 const roleOptions = [
     { value: 'backend developer', label: 'Backend Developer', icon: <CodeIcon /> },
@@ -109,7 +112,7 @@ const protocolOptions = [
     },
 ]
 
-type ExpandedSection = 'context' | 'protocol' | 'model' | null
+type ExpandedSection = 'context' | 'protocol' | 'model' | 'skills' | null
 
 export function PromptGenerator() {
     const [input, setInput] = useState('')
@@ -121,6 +124,7 @@ export function PromptGenerator() {
     const [contexts, setContexts] = useState<string[]>([])
     const [protocols, setProtocols] = useState<string[]>([])
     const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null)
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
     const loadGuide = useCallback(async (modelId: string) => {
         const model = availableModels.find((m) => m.id === modelId)
@@ -146,7 +150,7 @@ export function PromptGenerator() {
         loadGuide(selectedModel)
     }, [selectedModel, loadGuide])
 
-    const toggleSection = (section: 'context' | 'protocol' | 'model') => {
+    const toggleSection = (section: 'context' | 'protocol' | 'model' | 'skills') => {
         setExpandedSection((prev) => (prev === section ? null : section))
     }
 
@@ -162,7 +166,13 @@ export function PromptGenerator() {
         )
     }
 
-    const prompt = input ? buildPromptJsonString({ input, role, contexts, protocols, modelGuide }) : ''
+    const handleSkillToggle = (skillId: string) => {
+        setSelectedSkills((prev) =>
+            prev.includes(skillId) ? prev.filter((s) => s !== skillId) : [...prev, skillId]
+        )
+    }
+
+    const prompt = input ? buildPromptJsonString({ input, role, contexts, protocols, modelGuide, skills: selectedSkills }) : ''
 
     const copyToClipboard = async () => {
         await navigator.clipboard.writeText(prompt)
@@ -413,6 +423,44 @@ export function PromptGenerator() {
                                     )}
                                 </Paper>
 
+                                <Paper elevation={0} sx={{ border: '1px solid rgba(255, 152, 0, 0.2)' }}>
+                                    <Box
+                                        sx={{
+                                            p: 2,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            cursor: 'pointer',
+                                            '&:hover': { backgroundColor: 'rgba(255, 152, 0, 0.05)' },
+                                        }}
+                                        onClick={() => toggleSection('skills')}
+                                    >
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <SkillsIcon color="warning" />
+                                            <Typography variant="h6">Skills</Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            {selectedSkills.length > 0 && (
+                                                <Chip
+                                                    label={`${selectedSkills.length}`}
+                                                    size="small"
+                                                    color="warning"
+                                                />
+                                            )}
+                                            {expandedSection === 'skills' ? <ExpandLessIcon color="warning" /> : <ExpandMoreIcon color="warning" />}
+                                        </Box>
+                                    </Box>
+                                    {expandedSection === 'skills' && (
+                                        <Box sx={{ p: 2, pt: 0 }}>
+                                            <SkillTree
+                                                skills={skillsTree}
+                                                selectedSkills={selectedSkills}
+                                                onToggle={handleSkillToggle}
+                                            />
+                                        </Box>
+                                    )}
+                                </Paper>
+
                                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                     <Chip
                                         icon={<ModelIcon />}
@@ -444,6 +492,30 @@ export function PromptGenerator() {
                                             size="small"
                                         />
                                     ))}
+                                    {selectedSkills.map((skillId) => {
+                                        const skillNode = (() => {
+                                            const findSkill = (nodes: typeof skillsTree, id: string): typeof skillsTree[0] | null => {
+                                                for (const node of nodes) {
+                                                    if (node.id === id) return node
+                                                    if (node.children) {
+                                                        const found = findSkill(node.children, id)
+                                                        if (found) return found
+                                                    }
+                                                }
+                                                return null
+                                            }
+                                            return findSkill(skillsTree, skillId)
+                                        })()
+                                        return skillNode ? (
+                                            <Chip
+                                                key={skillId}
+                                                label={skillNode.name}
+                                                color="warning"
+                                                variant="outlined"
+                                                size="small"
+                                            />
+                                        ) : null
+                                    })}
                                 </Box>
                             </Box>
                         </CardContent>

@@ -1,4 +1,5 @@
 import type { PromptingGuide } from './llmModels'
+import { findSkillById, skillsTree } from './skills'
 
 type PromptOptions = {
     role: string
@@ -6,6 +7,7 @@ type PromptOptions = {
     contexts: string[]
     protocols: string[]
     modelGuide?: PromptingGuide | null
+    skills: string[]
 }
 
 const contextNames: Record<string, string> = {
@@ -42,6 +44,7 @@ export type PromptOutput = {
     config: {
         role: string
         capabilities: string[]
+        skills: string[]
     }
     behavior_rules: {
         on_ambiguity?: string
@@ -69,10 +72,19 @@ export function buildPrompt(opts: PromptOptions): PromptOutput {
         }
     })
 
+    const skills: string[] = []
+    opts.skills.forEach((skillId) => {
+        const skill = findSkillById(skillsTree, skillId)
+        if (skill) {
+            skills.push(skill.name)
+        }
+    })
+
     const output: PromptOutput = {
         config: {
             role: opts.role,
             capabilities: capabilities,
+            skills: skills,
         },
         behavior_rules: behavior_rules,
         output_format: opts.input,
